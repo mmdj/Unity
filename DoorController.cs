@@ -14,26 +14,35 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        _audioSource = GetComponent<AudioSource>();
-        _audioSource.volume = 0.0f;
-        _audioSource.Play();
-
-        if (TryGetComponent(out Animator animator))
+        if (collision.CompareTag("Player"))
         {
-            _animator = animator;
-            _animator.SetBool(DOOR_OPEN_TAG, true);
+            _audioSource = GetComponent<AudioSource>();
+            _audioSource.volume = 0.0f;
+            _audioSource.Play();
+
+            if (TryGetComponent(out Animator animator))
+            {
+                _animator = animator;
+                _animator.SetBool(DOOR_OPEN_TAG, true);
+            }
         }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
-    {   
-        ChangeVolume();
+    {
+        if (collision.CompareTag("Player"))
+        {
+            ChangeVolume();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        _audioSource.Stop();
-        _animator.SetBool(DOOR_OPEN_TAG, false);
+        if (collision.CompareTag("Player"))
+        {
+            _audioSource.Stop();
+            _animator.SetBool(DOOR_OPEN_TAG, false);
+        }
     }
 
     /// <summary> Fade in and fade out smoothly, by changing the volume from 0 to 1 </summary>
@@ -56,9 +65,9 @@ public class DoorController : MonoBehaviour
             targetValue = 0.0f;
         }
 
-        _audioSource.volume = Vector2.MoveTowards(new Vector2(_audioSource.volume, 0.0f), new Vector2(targetValue, 0.0f), _speed * Time.deltaTime).x;
-
-        Debug.Log("volume = " + _audioSource.volume);
+        _audioSource.volume = Vector2.MoveTowards(new Vector2(_audioSource.volume, 0.0f)
+                                                , new Vector2(targetValue, 0.0f)
+                                                , _speed * Time.deltaTime).x;
     }
 
 }
