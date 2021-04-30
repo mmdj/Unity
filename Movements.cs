@@ -2,15 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+
 public class Movements : MonoBehaviour
 {
     [SerializeField] private float _speed;
     private Animator _animator;
-    private int _paramID;
+    private Rigidbody2D _rigidbody = null;
+    private SpriteRenderer _spriteRenderer = null;
+    bool _facingRight = true;
 
     private void Start()
     {
         _animator = GetComponentInChildren<Animator>();
+        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (TryGetComponent(out Rigidbody2D rigidbody))
+        {
+            _rigidbody = rigidbody;
+        }
     }
 
     private void Update()
@@ -21,11 +31,21 @@ public class Movements : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.Translate(_speed * Time.deltaTime, 0, 0);
+            if (!_facingRight)
+            {
+                _facingRight = true;
+                _spriteRenderer.flipX = false;
+            }
             _animator.SetBool("run", true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(-_speed * Time.deltaTime, 0, 0);
+            if (_facingRight)
+            {
+                _facingRight = false;
+                _spriteRenderer.flipX = true;
+            }
             _animator.SetBool("run", true);
         }
         else
@@ -35,5 +55,21 @@ public class Movements : MonoBehaviour
                 _animator.SetBool("run", false);
         }
 
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (_animator == null)
+            return;
+        if (_animator.GetBool("jump"))
+        {
+            _animator.SetBool("jump", false);
+        }
+
+        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))
+        {
+            _rigidbody.AddForce(Vector2.up, ForceMode2D.Impulse);
+            _animator.SetBool("jump", true);
+        }
     }
 }
