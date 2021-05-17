@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(AudioSource), typeof(Animator))]
 
-public class DoorController : MonoBehaviour
+public class DoorAnnunciator : MonoBehaviour
 {
     [SerializeField] [Range(0, 2)] private float _speed;
 
@@ -14,7 +14,8 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+
+        if (collision.GetComponent<Hero>() != null)
         {
             _audioSource = GetComponent<AudioSource>();
             _audioSource.volume = 0.0f;
@@ -30,7 +31,7 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.GetComponent<Hero>() != null)
         {
             ChangeVolume();
         }
@@ -38,7 +39,7 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.GetComponent<Hero>() != null)
         {
             _audioSource.Stop();
             _animator.SetBool(DOOR_OPEN_TAG, false);
