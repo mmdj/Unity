@@ -7,31 +7,33 @@ public class DoorAnnunciator : MonoBehaviour
 {
     [SerializeField] [Range(0, 2)] private float _speed;
 
-    private AudioSource _audioSource;
-    private Animator _animator;
+    private AudioSource _audioSource = null;
+    private Animator _animator = null;
     float targetValue = 1.0f;
-    const string DOOR_OPEN_TAG = "isDoorOpened";
+    const string DOOR_OPEN_CONDITION = "isDoorOpened";
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-        if (collision.GetComponent<Hero>() != null)
+        if (collision.TryGetComponent(out Hero hero))
         {
-            _audioSource = GetComponent<AudioSource>();
-            _audioSource.volume = 0.0f;
-            _audioSource.Play();
+            if (TryGetComponent(out AudioSource audioSource))
+            {
+                _audioSource = audioSource;
+                _audioSource.volume = 0.0f;
+                _audioSource.Play();
+            }
 
             if (TryGetComponent(out Animator animator))
             {
                 _animator = animator;
-                _animator.SetBool(DOOR_OPEN_TAG, true);
+                _animator.SetBool(DOOR_OPEN_CONDITION, true);
             }
         }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.GetComponent<Hero>() != null)
+        if (collision.TryGetComponent(out Hero hero))
         {
             ChangeVolume();
         }
@@ -39,23 +41,23 @@ public class DoorAnnunciator : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Hero>() != null)
+        if (collision.TryGetComponent(out Hero hero))
         {
-            _audioSource.Stop();
-            _animator.SetBool(DOOR_OPEN_TAG, false);
+            if (_audioSource != null)
+                _audioSource.Stop();
+
+            if (_animator != null)
+                _animator.SetBool(DOOR_OPEN_CONDITION, false);
         }
     }
 
     /// <summary> Fade in and fade out smoothly, by changing the volume from 0 to 1 </summary>
     private void ChangeVolume()
     {
-        /* 
-        * Для периодического изменения громкости наиболее подходит Mathf.PingPong:
-        * // PingPong returns a value that will increment and decrement between the value 0 and length
-        * _audioSource.volume = Mathf.PingPong(Time.time, 1.0f);
-        * Но поскольку в таске написано "Перед выполнением изучите Mathf.MoveTowards", то попробуем использовать ее
-        * и получим такой же результат как и при использовании Mathf.PingPong:
-        */
+        if (_audioSource == null)
+            return;
+
+        //_audioSource.volume = Mathf.PingPong(Time.time, 1.0f);
 
         if (_audioSource.volume == 0)
         {
@@ -66,9 +68,7 @@ public class DoorAnnunciator : MonoBehaviour
             targetValue = 0.0f;
         }
 
-        _audioSource.volume = Vector2.MoveTowards(new Vector2(_audioSource.volume, 0.0f)
-                                                , new Vector2(targetValue, 0.0f)
-                                                , _speed * Time.deltaTime).x;
+        _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetValue, _speed * Time.deltaTime);
     }
 
 }

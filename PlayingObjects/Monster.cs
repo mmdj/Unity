@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
-    public GameObject MonsterPrefab { get; set; }
-
     private PatrolPoint[] _patrolPoints;
     private int _currentPoint;
 
@@ -15,7 +13,7 @@ public class Monster : MonoBehaviour
     public void Init()
     {
         _currentPoint = 0;
-        _patrolPoints = transform.GetComponentsInChildren<PatrolPoint>();
+        _patrolPoints = transform.parent.GetComponentsInChildren<PatrolPoint>();
     }
 
     private void Update()
@@ -29,9 +27,9 @@ public class Monster : MonoBehaviour
 
         PatrolPoint target = _patrolPoints[_currentPoint];
         Vector3 targetPos = new Vector3(target.transform.position.x, transform.position.y, transform.position.z);
-        MonsterPrefab.transform.position = Vector3.MoveTowards(MonsterPrefab.transform.position, targetPos, MONSTER_SPEED * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, MONSTER_SPEED * Time.deltaTime);
 
-        if (Vector3.Distance(MonsterPrefab.transform.position, targetPos) <= MONSTER_POINT_SENSITIVITY)
+        if (Vector3.Distance(transform.position, targetPos) <= MONSTER_POINT_SENSITIVITY)
         {
             _currentPoint++;
             if (_currentPoint >= _patrolPoints.Length)

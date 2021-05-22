@@ -11,6 +11,7 @@ public class Movements : MonoBehaviour
     private Rigidbody2D _rigidbody = null;
     private SpriteRenderer _spriteRenderer = null;
     bool _facingRight = true;
+    bool _isJumped = false;
 
     private void Start()
     {
@@ -25,7 +26,7 @@ public class Movements : MonoBehaviour
 
     private void Update()
     {
-        if (_animator == null)
+        if (_animator == null || _spriteRenderer == null)
             return;
 
         if (Input.GetKey(KeyCode.RightArrow))
@@ -66,10 +67,19 @@ public class Movements : MonoBehaviour
             _animator.SetBool("jump", false);
         }
 
-        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))
+        if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow)) 
+            && (collision.gameObject.GetComponentsInParent<Ground>().Length > 0 || collision.gameObject.GetComponentsInParent<Monster>().Length > 0) 
+            && !_isJumped)
         {
-            _rigidbody.AddForce(Vector2.up, ForceMode2D.Impulse);
+            _isJumped = true;
+            _rigidbody.AddForce(Vector2.up, ForceMode2D.Force);
             _animator.SetBool("jump", true);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (_isJumped)
+            _isJumped = false;
     }
 }
