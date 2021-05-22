@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MonstersSpawner : MonoBehaviour
 {
-    [SerializeField] private Monster _monsterPrefab;
+    [SerializeField] private Monster _monster;
     [SerializeField] private int _spawnCount;
 
     private const float SPAWN_TIME = 2f;
@@ -24,7 +24,7 @@ public class MonstersSpawner : MonoBehaviour
         {
             foreach (SpawnPlace spawnPlace in spawnPlaces)
             {
-                Monster monster = Instantiate(_monsterPrefab, spawnPlace.transform.position, Quaternion.identity, spawnPlace.transform);
+                Monster monster = Instantiate(_monster, spawnPlace.transform.position, Quaternion.identity, spawnPlace.transform);
                 monster.Init();
                 yield return new WaitForSeconds(SPAWN_TIME);
             }
