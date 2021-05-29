@@ -1,17 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 
 public class Movements : MonoBehaviour
 {
     [SerializeField] private float _speed;
-    private Animator _animator;
+
+    private Animator _animator = null;
     private Rigidbody2D _rigidbody = null;
     private SpriteRenderer _spriteRenderer = null;
-    bool _facingRight = true;
-    bool _isJumped = false;
+
+    private bool _facingRight = true;
+    private bool _isJumped = false;
 
     private void Start()
     {
@@ -32,6 +32,7 @@ public class Movements : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.Translate(_speed * Time.deltaTime, 0, 0);
+
             if (!_facingRight)
             {
                 _facingRight = true;
@@ -42,6 +43,7 @@ public class Movements : MonoBehaviour
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(-_speed * Time.deltaTime, 0, 0);
+
             if (_facingRight)
             {
                 _facingRight = false;
@@ -52,8 +54,11 @@ public class Movements : MonoBehaviour
         else
         {
             transform.Translate(0, 0, 0);
+
             if (_animator.GetBool("run"))
+            {
                 _animator.SetBool("run", false);
+            }
         }
 
     }
@@ -62,6 +67,7 @@ public class Movements : MonoBehaviour
     {
         if (_animator == null)
             return;
+
         if (_animator.GetBool("jump"))
         {
             _animator.SetBool("jump", false);

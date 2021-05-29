@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(AudioSource), typeof(Animator))]
 
@@ -9,8 +8,9 @@ public class DoorAnnunciator : MonoBehaviour
 
     private AudioSource _audioSource = null;
     private Animator _animator = null;
-    float targetValue = 1.0f;
-    const string DOOR_OPEN_CONDITION = "isDoorOpened";
+    private float targetValue = 1.0f;
+
+    private const string DoorOpenConditionName = "isDoorOpened";
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -26,7 +26,7 @@ public class DoorAnnunciator : MonoBehaviour
             if (TryGetComponent(out Animator animator))
             {
                 _animator = animator;
-                _animator.SetBool(DOOR_OPEN_CONDITION, true);
+                _animator.SetBool(DoorOpenConditionName, true);
             }
         }
     }
@@ -47,7 +47,7 @@ public class DoorAnnunciator : MonoBehaviour
                 _audioSource.Stop();
 
             if (_animator != null)
-                _animator.SetBool(DOOR_OPEN_CONDITION, false);
+                _animator.SetBool(DoorOpenConditionName, false);
         }
     }
 

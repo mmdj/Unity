@@ -1,3 +1,6 @@
 using UnityEngine;
 
-public class SpawnPlace : MonoBehaviour { }
+public class SpawnPlace : MonoBehaviour 
+{
+
+}

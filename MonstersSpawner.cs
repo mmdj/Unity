@@ -6,7 +6,7 @@ public class MonstersSpawner : MonoBehaviour
     [SerializeField] private Monster _monster;
     [SerializeField] private int _spawnCount;
 
-    private const float SPAWN_TIME = 2f;
+    private const float SpawnTime = 2f;
     
     private void Start()
     {
@@ -25,8 +25,8 @@ public class MonstersSpawner : MonoBehaviour
             foreach (SpawnPlace spawnPlace in spawnPlaces)
             {
                 Monster monster = Instantiate(_monster, spawnPlace.transform.position, Quaternion.identity, spawnPlace.transform);
-                monster.Init();
-                yield return new WaitForSeconds(SPAWN_TIME);
+
+                yield return new WaitForSeconds(SpawnTime);
             }
         }
     }

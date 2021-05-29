@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
     private PatrolPoint[] _patrolPoints;
     private int _currentPoint;
 
-    private const float MONSTER_SPEED = 1f;
-    private const float MONSTER_POINT_SENSITIVITY = 0.2f;
+    private const float MonsterSpeed = 1f;
+    private const float MonsterPointSensitivity = 0.2f;
 
-    public void Init()
+    private void Start()
     {
         _currentPoint = 0;
         _patrolPoints = transform.parent.GetComponentsInChildren<PatrolPoint>();
@@ -27,17 +25,17 @@ public class Monster : MonoBehaviour
 
         PatrolPoint target = _patrolPoints[_currentPoint];
         Vector3 targetPos = new Vector3(target.transform.position.x, transform.position.y, transform.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, MONSTER_SPEED * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, MonsterSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, targetPos) <= MONSTER_POINT_SENSITIVITY)
+        if (Vector3.Distance(transform.position, targetPos) <= MonsterPointSensitivity)
         {
             _currentPoint++;
+
             if (_currentPoint >= _patrolPoints.Length)
             {
                 _currentPoint = 0;
             }
         }
     }
-
 }
 
