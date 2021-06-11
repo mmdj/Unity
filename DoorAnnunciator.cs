@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AudioSource), typeof(Animator))]
+[RequireComponent(typeof(AudioSource), typeof(Animator), typeof(BoxCollider2D))]
 
 public class DoorAnnunciator : MonoBehaviour
 {

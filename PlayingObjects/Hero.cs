@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+[RequireComponent(typeof(HeroAnimator))]
 
 public class Hero : MonoBehaviour 
 { 

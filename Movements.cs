@@ -1,23 +1,19 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent (typeof(Rigidbody2D), typeof(Movements), typeof(CircleCollider2D))]
 
 public class Movements : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    private Animator _animator = null;
-    private Rigidbody2D _rigidbody = null;
-    private SpriteRenderer _spriteRenderer = null;
+    public bool IsAlreadyJumped { get; private set; } = false;
 
-    private bool _facingRight = true;
-    private bool _isJumped = false;
+    private Rigidbody2D _rigidbody = null;
+    private bool _isCollisionWithGround = false;
+    private bool _isCollisionWithMonster = false;
 
     private void Start()
     {
-        _animator = GetComponentInChildren<Animator>();
-        _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
         if (TryGetComponent(out Rigidbody2D rigidbody))
         {
             _rigidbody = rigidbody;
@@ -26,66 +22,49 @@ public class Movements : MonoBehaviour
 
     private void Update()
     {
-        if (_animator == null || _spriteRenderer == null)
-            return;
-
         if (Input.GetKey(KeyCode.RightArrow))
         {
             transform.Translate(_speed * Time.deltaTime, 0, 0);
-
-            if (!_facingRight)
-            {
-                _facingRight = true;
-                _spriteRenderer.flipX = false;
-            }
-            _animator.SetBool("run", true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(-_speed * Time.deltaTime, 0, 0);
-
-            if (_facingRight)
-            {
-                _facingRight = false;
-                _spriteRenderer.flipX = true;
-            }
-            _animator.SetBool("run", true);
         }
         else
         {
             transform.Translate(0, 0, 0);
-
-            if (_animator.GetBool("run"))
-            {
-                _animator.SetBool("run", false);
-            }
-        }
-
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (_animator == null)
-            return;
-
-        if (_animator.GetBool("jump"))
-        {
-            _animator.SetBool("jump", false);
-        }
-
-        if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow)) 
-            && (collision.gameObject.GetComponentsInParent<Ground>().Length > 0 || collision.gameObject.GetComponentsInParent<Monster>().Length > 0) 
-            && !_isJumped)
-        {
-            _isJumped = true;
-            _rigidbody.AddForce(Vector2.up, ForceMode2D.Force);
-            _animator.SetBool("jump", true);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (_isJumped)
-            _isJumped = false;
+        _isCollisionWithGround = collision.gameObject.GetComponentsInParent<Ground>().Length > 0;
+
+        if (!_isCollisionWithGround)
+            _isCollisionWithMonster = collision.gameObject.GetComponentsInParent<Monster>().Length > 0;
+
+        if (IsAlreadyJumped)
+            IsAlreadyJumped = false;
     }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (CanJump())
+        {
+            IsAlreadyJumped = true;
+            _rigidbody.AddForce(Vector2.up, ForceMode2D.Force);
+        }
+    }
+
+    public bool CanJump ()
+    {
+        if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))
+            && (_isCollisionWithGround || _isCollisionWithMonster)
+            && !IsAlreadyJumped)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
