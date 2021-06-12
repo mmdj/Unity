@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer), typeof(Hero))]
+[RequireComponent(typeof(CircleCollider2D))]
 
 public class HeroAnimator : MonoBehaviour
 {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent (typeof(Rigidbody2D), typeof(Movements), typeof(CircleCollider2D))]
+[RequireComponent (typeof(Rigidbody2D), typeof(Movements))]
 
 public class Movements : MonoBehaviour
 {
