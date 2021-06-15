@@ -10,23 +10,22 @@ public class MonstersSpawner : MonoBehaviour
     
     private void Start()
     {
-        StartCoroutine(SpawnMonsters());
-    }
-
-    private IEnumerator SpawnMonsters()
-    {
         SpawnPlace[] spawnPlaces = GetComponentsInChildren<SpawnPlace>();
 
-        if (spawnPlaces.Length == 0) 
-            yield return null;
+        if (spawnPlaces.Length > 0)
+            StartCoroutine(SpawnMonsters(spawnPlaces));
+    }
+
+    private IEnumerator SpawnMonsters(SpawnPlace[] spawnPlaces)
+    {
+        var waitForSeconds = new WaitForSeconds(_spawnTime);
 
         for (int i = 0; i < _spawnCount; i++)
         {
             foreach (SpawnPlace spawnPlace in spawnPlaces)
             {
                 Monster monster = Instantiate(_monster, spawnPlace.transform.position, Quaternion.identity, spawnPlace.transform);
-
-                yield return new WaitForSeconds(_spawnTime);
+                yield return waitForSeconds;
             }
         }
     }
