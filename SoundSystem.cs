@@ -43,6 +43,7 @@ public class SoundSystem : MonoBehaviour
 
     public void PlaySound(AudioType type)
     {
+        SetVolume(1.0f);
         if (_audioSource != null)
             _audioSource.PlayOneShot(_audioMap[type]);
     }
