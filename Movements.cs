@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody2D), typeof(Movements))]
 
@@ -6,11 +7,10 @@ public class Movements : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    public bool IsAlreadyJumped { get; private set; } = false;
-
     private Rigidbody2D _rigidbody = null;
     private bool _isCollisionWithGround = false;
     private bool _isCollisionWithMonster = false;
+    private bool IsAlreadyJumped = false;
 
     private void Start()
     {
@@ -32,7 +32,7 @@ public class Movements : MonoBehaviour
         }
         else
         {
-            transform.Translate(0, 0, 0);
+            transform.Translate(Vector3.zero);
         }
     }
 
@@ -43,8 +43,6 @@ public class Movements : MonoBehaviour
         if (!_isCollisionWithGround)
             _isCollisionWithMonster = collision.gameObject.GetComponentsInParent<Monster>().Length > 0;
 
-        if (IsAlreadyJumped)
-            IsAlreadyJumped = false;
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -53,18 +51,21 @@ public class Movements : MonoBehaviour
         {
             IsAlreadyJumped = true;
             _rigidbody.AddForce(Vector2.up, ForceMode2D.Force);
+            StartCoroutine(ResetJump());
         }
     }
 
     public bool CanJump ()
     {
-        if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow))
-            && (_isCollisionWithGround || _isCollisionWithMonster)
-            && !IsAlreadyJumped)
-        {
-            return true;
-        }
-        return false;
+        return (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow)) 
+            && (_isCollisionWithGround || _isCollisionWithMonster) 
+            && !IsAlreadyJumped;  
     }
 
+    private IEnumerator ResetJump()
+    {
+        yield return new WaitForSeconds(1.0f);
+        if (IsAlreadyJumped)
+            IsAlreadyJumped = false;
+    }
 }

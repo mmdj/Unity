@@ -4,24 +4,38 @@ public class CoinsSpawner : MonoBehaviour
 {
     [SerializeField] private Coin _coin;
 
-    public CoinPlace[] CoinPlaces { get; private set; } = null;
+    private CoinPlace[] _coinPlaces = null;
+    private int _currentCoinPlace = 0;
 
     private void Awake()
     {
-        CoinPlaces = GetComponentsInChildren<CoinPlace>();
+        _coinPlaces = GetComponentsInChildren<CoinPlace>();
     }
 
     private void Start()
     {
-        if (CoinPlaces.Length > 0)
+        SpawnNextCoin();
+    }
+
+    public void SpawnNextCoin()
+    {
+        if (_coinPlaces != null && _coinPlaces.Length > 0)
         {
-            SpawnCoin(CoinPlaces[0]);
+            CoinPlace place = _coinPlaces[_currentCoinPlace];
+            Instantiate(_coin, place.transform.position, Quaternion.identity, place.transform);
+
+            ChangeCurrentToNextCoinPlace();
         }
     }
 
-    public void SpawnCoin (CoinPlace coinPlaces)
+    public void ChangeCurrentToNextCoinPlace()
     {
-        Instantiate(_coin, coinPlaces.transform.position, Quaternion.identity, coinPlaces.transform);
+        _currentCoinPlace++;
+
+        if (_currentCoinPlace >= _coinPlaces.Length)
+        {
+            _currentCoinPlace = 0;
+        }
     }
 
 }
