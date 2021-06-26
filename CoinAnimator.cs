@@ -31,7 +31,6 @@ public class CoinAnimator : MonoBehaviour
             return;
 
         _isCollisionWithHero = collider.gameObject.GetComponentInChildren<Hero>() != null;
-
         if (_isCollisionWithHero)
         {
             _animator.SetTrigger(_catchTrigger);
