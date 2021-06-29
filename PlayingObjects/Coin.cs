@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CoinCatcher), typeof(SpriteRenderer), typeof(CircleCollider2D))]
+[RequireComponent(typeof(SpriteRenderer), typeof(CircleCollider2D))]
 
 public class Coin : MonoBehaviour
 {
